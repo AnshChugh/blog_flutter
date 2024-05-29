@@ -71,8 +71,11 @@ class _SignupPageState extends State<SignupPage> {
                 buttonText: 'Sign Up.',
                 onPressed: () {
                   if (formKey.currentState!.validate() == true) {
-                    context.read<AuthBloc>().add(AuthSignUp(name: nameController.text.trim(), email: emailController.text.trim(), password: passwordController.text.trim()));
-                  }
+                    context.read<AuthBloc>().add(AuthSignUp(
+                        name: nameController.text.trim(),
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim()));
+                  } 
                 },
               ),
               const SizedBox(

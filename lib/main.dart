@@ -1,23 +1,18 @@
 import 'package:blog_flutter/core/theme/theme.dart';
-import 'package:blog_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:blog_flutter/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:blog_flutter/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_flutter/features/auth/presentation/pages/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:blog_flutter/init_dependencies.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:blog_flutter/firebase_options.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  WidgetsFlutterBinding.ensureInitialized();
+  await initDependencies();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (_) => AuthBloc(
-              userSignUp: UserSignUp(AuthRepositoryImpl(
-                  FirebaseRemoteDataSourceImpl(FirebaseAuth.instance))) ))
+        create: (_) => serviceLocator<AuthBloc>(),
+      )
     ],
     child: const MyApp(),
   ));
