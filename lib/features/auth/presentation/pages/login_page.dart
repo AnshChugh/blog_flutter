@@ -58,15 +58,16 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                 height: 20,
               ),
-              const AuthGradientButton(buttonText: 'Log In. '),
+              AuthGradientButton(
+                buttonText: 'Log In. ',
+                onPressed: () {},
+              ),
               const SizedBox(
                 height: 20,
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushReplacement(
-                    context, SignupPage.route()
-                  );
+                  Navigator.pushReplacement(context, SignupPage.route());
                 },
                 child: RichText(
                     text: TextSpan(

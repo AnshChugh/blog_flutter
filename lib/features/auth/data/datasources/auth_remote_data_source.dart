@@ -8,9 +8,9 @@ abstract interface class AuthRemoteDataSource {
       {required String email, required String password});
 }
 
-class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+class FirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseAuth firebaseAuthInstance;
-  AuthRemoteDataSourceImpl(this.firebaseAuthInstance);
+  FirebaseRemoteDataSourceImpl(this.firebaseAuthInstance);
   @override
   Future<String> signUpWithEmailPassword(
       {required String name,
