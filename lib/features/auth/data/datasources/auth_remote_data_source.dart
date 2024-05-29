@@ -1,34 +1,47 @@
 import 'package:blog_flutter/core/error/exceptions.dart';
+import 'package:blog_flutter/features/auth/data/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:firebase_auth/firebase_auth.dart";
 
 abstract interface class AuthRemoteDataSource {
-  Future<String> signUpWithEmailPassword(
+  Future<UserModel> signUpWithEmailPassword(
       {required String name, required String email, required String password});
-  Future<String> loginWithEmailPassword(
+  Future<UserModel> loginWithEmailPassword(
       {required String email, required String password});
 }
 
 class FirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseAuth firebaseAuthInstance;
-  FirebaseRemoteDataSourceImpl(this.firebaseAuthInstance);
+  final FirebaseFirestore firestoreInstance;
+  FirebaseRemoteDataSourceImpl(
+      this.firebaseAuthInstance, this.firestoreInstance);
   @override
-  Future<String> signUpWithEmailPassword(
+  Future<UserModel> signUpWithEmailPassword(
       {required String name,
       required String email,
       required String password}) async {
     try {
-      final userCredentials = await firebaseAuthInstance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      await userCredentials.user?.updateDisplayName(name);
-      await userCredentials.user?.reload();
-      return userCredentials.user!.uid;
+      await firebaseAuthInstance.createUserWithEmailAndPassword(
+          email: email, password: password);
+      await firebaseAuthInstance.currentUser!.updateDisplayName(name);
+      await firebaseAuthInstance.currentUser!.reload();
+      final currentUser = firebaseAuthInstance.currentUser!;
+      UserModel user = UserModel(
+          id: currentUser.uid,
+          name: currentUser.displayName!,
+          email: currentUser.email!);
+      await firestoreInstance
+          .collection('users')
+          .doc(user.id)
+          .set(user.toMap());
+      return user;
     } catch (e) {
       throw ServerException(e.toString());
     }
   }
 
   @override
-  Future<String> loginWithEmailPassword(
+  Future<UserModel> loginWithEmailPassword(
       {required String email, required String password}) {
     //TODO: Implement LoginWithEmailPassword
     throw UnimplementedError();
