@@ -42,8 +42,17 @@ class FirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> loginWithEmailPassword(
-      {required String email, required String password}) {
-    //TODO: Implement LoginWithEmailPassword
-    throw UnimplementedError();
+      {required String email, required String password}) async {
+    try {
+      final userCred = await firebaseAuthInstance.signInWithEmailAndPassword(
+          email: email, password: password);
+      UserModel user = UserModel(
+          id: userCred.user!.uid,
+          name: userCred.user!.displayName!,
+          email: userCred.user!.email!);
+      return user;
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
   }
 }
