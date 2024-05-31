@@ -2,7 +2,7 @@ import 'package:blog_flutter/core/error/failures.dart';
 import 'package:blog_flutter/core/usecase/usecase.dart';
 import 'package:blog_flutter/features/auth/domain/entities/user.dart';
 import 'package:blog_flutter/features/auth/domain/repository/auth_repository.dart';
-import 'package:fpdart/src/either.dart';
+import 'package:fpdart/fpdart.dart';
 
 class UserLoginParams {
   final String email;

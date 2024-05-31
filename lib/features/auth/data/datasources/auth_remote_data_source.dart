@@ -8,6 +8,7 @@ abstract interface class AuthRemoteDataSource {
       {required String name, required String email, required String password});
   Future<UserModel> loginWithEmailPassword(
       {required String email, required String password});
+  Future<UserModel?> getCurrentUserData();
 }
 
 class FirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -51,6 +52,24 @@ class FirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
           name: userCred.user!.displayName!,
           email: userCred.user!.email!);
       return user;
+    } catch (e) {
+      throw ServerException(e.toString());
+    }
+  }
+
+  @override
+  Future<UserModel?> getCurrentUserData() async {
+    try {
+      if (firebaseAuthInstance.currentUser != null) {
+        final userSnapshot = await firestoreInstance
+            .collection('users')
+            .doc(firebaseAuthInstance.currentUser!.uid)
+            .get();
+        final user = UserModel.fromMap(userSnapshot.data()!);
+        return user;
+      }
+
+      return null;
     } catch (e) {
       throw ServerException(e.toString());
     }

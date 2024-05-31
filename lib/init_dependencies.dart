@@ -1,6 +1,7 @@
 import 'package:blog_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:blog_flutter/features/auth/domain/repository/auth_repository.dart';
+import 'package:blog_flutter/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_flutter/features/auth/domain/usecases/user_log_in.dart';
 import 'package:blog_flutter/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_flutter/features/auth/presentation/bloc/auth_bloc.dart';
@@ -20,16 +21,20 @@ Future<void> initDependencies() async {
 }
 
 void _initAuth() {
-  serviceLocator.registerFactory<AuthRemoteDataSource>(() =>
-      FirebaseRemoteDataSourceImpl(
-          serviceLocator<FirebaseAuth>(), serviceLocator<FirebaseFirestore>()));
-
-  serviceLocator.registerFactory<AuthRepository>(
-      () => AuthRepositoryImpl(serviceLocator()));
-
-  serviceLocator.registerFactory(() => UserSignUp(serviceLocator()));
-  serviceLocator.registerFactory(() => UserLogin(serviceLocator()));
-
-  serviceLocator.registerLazySingleton(() =>
-      AuthBloc(userSignUp: serviceLocator(), userLogin: serviceLocator()));
+  serviceLocator
+    // Datasource
+    ..registerFactory<AuthRemoteDataSource>(() => FirebaseRemoteDataSourceImpl(
+        serviceLocator<FirebaseAuth>(), serviceLocator<FirebaseFirestore>()))
+    // Repository
+    ..registerFactory<AuthRepository>(
+        () => AuthRepositoryImpl(serviceLocator()))
+    // use cases
+    ..registerFactory(() => UserSignUp(serviceLocator()))
+    ..registerFactory(() => UserLogin(serviceLocator()))
+    ..registerFactory(() => CurrentUser(serviceLocator()))
+    // Bloc
+    ..registerLazySingleton(() => AuthBloc(
+        userSignUp: serviceLocator(),
+        userLogin: serviceLocator(),
+        currentUser: serviceLocator()));
 }
