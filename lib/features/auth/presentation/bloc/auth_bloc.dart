@@ -1,5 +1,5 @@
 import 'package:blog_flutter/core/usecase/usecase.dart';
-import 'package:blog_flutter/features/auth/domain/entities/user.dart';
+import 'package:blog_flutter/core/common/entities/user.dart';
 import 'package:blog_flutter/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_flutter/features/auth/domain/usecases/user_log_in.dart';
 import 'package:blog_flutter/features/auth/domain/usecases/user_sign_up.dart';
