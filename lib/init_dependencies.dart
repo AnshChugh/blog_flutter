@@ -1,3 +1,4 @@
+import 'package:blog_flutter/core/common/cubits/app_user/app_user_cubit.dart';
 import 'package:blog_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:blog_flutter/features/auth/domain/repository/auth_repository.dart';
@@ -17,6 +18,11 @@ Future<void> initDependencies() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   serviceLocator.registerLazySingleton(() => FirebaseAuth.instance);
   serviceLocator.registerLazySingleton(() => FirebaseFirestore.instance);
+
+  //core
+  serviceLocator.registerLazySingleton(
+    () => AppUserCubit(),
+  );
   _initAuth();
 }
 
@@ -34,7 +40,9 @@ void _initAuth() {
     ..registerFactory(() => CurrentUser(serviceLocator()))
     // Bloc
     ..registerLazySingleton(() => AuthBloc(
-        userSignUp: serviceLocator(),
-        userLogin: serviceLocator(),
-        currentUser: serviceLocator()));
+          userSignUp: serviceLocator(),
+          userLogin: serviceLocator(),
+          currentUser: serviceLocator(),
+          appUserCubit: serviceLocator()
+        ));
 }
