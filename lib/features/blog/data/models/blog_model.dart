@@ -1,15 +1,15 @@
 import 'package:blog_flutter/features/blog/domain/entities/blog.dart';
 
 class BlogModel extends Blog {
-  BlogModel({
-    required super.id,
-    required super.posterId,
-    required super.title,
-    required super.content,
-    required super.imageUrl,
-    required super.topics,
-    required super.updatedAt,
-  });
+  BlogModel(
+      {required super.id,
+      required super.posterId,
+      required super.title,
+      required super.content,
+      required super.imageUrl,
+      required super.topics,
+      required super.updatedAt,
+      super.posterName});
 
   Map<String, dynamic> toMap() {
     return {
@@ -44,15 +44,16 @@ class BlogModel extends Blog {
       String? content,
       String? imageUrl,
       List<String>? topics,
-      DateTime? updatedAt}) {
+      DateTime? updatedAt,
+      String? posterName}) {
     return BlogModel(
-      id: id ?? this.id,
-      posterId: posterId ?? this.posterId,
-      title: title ?? this.title,
-      content: content ?? this.content,
-      imageUrl: imageUrl ?? this.imageUrl,
-      topics: topics ?? this.topics,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
+        id: id ?? this.id,
+        posterId: posterId ?? this.posterId,
+        title: title ?? this.title,
+        content: content ?? this.content,
+        imageUrl: imageUrl ?? this.imageUrl,
+        topics: topics ?? this.topics,
+        updatedAt: updatedAt ?? this.updatedAt,
+        posterName: posterName ?? this.posterName);
   }
 }

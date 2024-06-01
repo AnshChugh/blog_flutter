@@ -9,6 +9,7 @@ import 'package:blog_flutter/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_flutter/features/blog/data/datasources/blog_remote_data_source.dart';
 import 'package:blog_flutter/features/blog/data/repositories/blog_repository_impl.dart';
 import 'package:blog_flutter/features/blog/domain/repositories/blog_repository.dart';
+import 'package:blog_flutter/features/blog/domain/usecases/get_all_blogs.dart';
 import 'package:blog_flutter/features/blog/domain/usecases/upload_blog.dart';
 import 'package:blog_flutter/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:blog_flutter/firebase_options.dart';
@@ -67,8 +68,9 @@ void _initBlog() {
     ..registerFactory(
       () => UploadBlog(serviceLocator()),
     )
+    ..registerFactory(() => GetAllBlogs(serviceLocator()))
     // bloc
     ..registerLazySingleton(
-      () => BlogBloc(serviceLocator()),
+      () => BlogBloc(serviceLocator(), serviceLocator()),
     );
 }

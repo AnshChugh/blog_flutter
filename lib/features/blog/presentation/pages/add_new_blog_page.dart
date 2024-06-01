@@ -41,7 +41,6 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
     if (formKey.currentState!.validate() &&
         selectedTopics.isNotEmpty &&
         image != null) {
-      print('validated');
       final posterId =
           (context.read<AppUserCubit>().state as AppUserLoggedIn).user.id;
       context.read<BlogBloc>().add(BlogUploadEvent(
