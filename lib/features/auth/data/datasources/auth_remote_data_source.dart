@@ -1,7 +1,9 @@
 import 'package:blog_flutter/core/error/exceptions.dart';
 import 'package:blog_flutter/features/auth/data/models/user_model.dart';
+import 'package:blog_flutter/features/auth/domain/usecases/current_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:firebase_auth/firebase_auth.dart";
+import 'package:blog_flutter/core/common/entities/user.dart' as user;
 
 abstract interface class AuthRemoteDataSource {
   Future<UserModel> signUpWithEmailPassword(
@@ -9,6 +11,7 @@ abstract interface class AuthRemoteDataSource {
   Future<UserModel> loginWithEmailPassword(
       {required String email, required String password});
   Future<UserModel?> getCurrentUserData();
+  user.User? get currentUser;
 }
 
 class FirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -16,6 +19,14 @@ class FirebaseRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseFirestore firestoreInstance;
   FirebaseRemoteDataSourceImpl(
       this.firebaseAuthInstance, this.firestoreInstance);
+
+  @override
+  user.User? get currentUser => firebaseAuthInstance.currentUser == null
+      ? null
+      : user.User(
+          id: firebaseAuthInstance.currentUser!.uid,
+          name: firebaseAuthInstance.currentUser!.displayName!,
+          email: firebaseAuthInstance.currentUser!.email!);
   @override
   Future<UserModel> signUpWithEmailPassword(
       {required String name,

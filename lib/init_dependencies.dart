@@ -1,4 +1,5 @@
 import 'package:blog_flutter/core/common/cubits/app_user/app_user_cubit.dart';
+import 'package:blog_flutter/core/network/connection_checker.dart';
 import 'package:blog_flutter/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:blog_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:blog_flutter/features/auth/domain/repository/auth_repository.dart';
@@ -18,14 +19,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependencies() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  serviceLocator.registerLazySingleton(() => FirebaseAuth.instance);
-  serviceLocator.registerLazySingleton(() => FirebaseFirestore.instance);
-  serviceLocator.registerLazySingleton(() => FirebaseStorage.instance);
+  serviceLocator
+    ..registerLazySingleton(() => FirebaseAuth.instance)
+    ..registerLazySingleton(() => FirebaseFirestore.instance)
+    ..registerLazySingleton(() => FirebaseStorage.instance)
+    ..registerFactory(() => InternetConnection())
+    ..registerFactory<ConnectionChecker>(
+        () => ConnectionCheckerImpl(serviceLocator()));
   //core
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(),
@@ -41,7 +47,7 @@ void _initAuth() {
         serviceLocator<FirebaseAuth>(), serviceLocator<FirebaseFirestore>()))
     // Repository
     ..registerFactory<AuthRepository>(
-        () => AuthRepositoryImpl(serviceLocator()))
+        () => AuthRepositoryImpl(serviceLocator(), serviceLocator()))
     // use cases
     ..registerFactory(() => UserSignUp(serviceLocator()))
     ..registerFactory(() => UserLogin(serviceLocator()))
