@@ -6,6 +6,11 @@ import 'package:blog_flutter/features/auth/domain/usecases/current_user.dart';
 import 'package:blog_flutter/features/auth/domain/usecases/user_log_in.dart';
 import 'package:blog_flutter/features/auth/domain/usecases/user_sign_up.dart';
 import 'package:blog_flutter/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:blog_flutter/features/blog/data/datasources/blog_remote_data_source.dart';
+import 'package:blog_flutter/features/blog/data/repositories/blog_repository_impl.dart';
+import 'package:blog_flutter/features/blog/domain/repositories/blog_repository.dart';
+import 'package:blog_flutter/features/blog/domain/usecases/upload_blog.dart';
+import 'package:blog_flutter/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:blog_flutter/firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,12 +23,13 @@ Future<void> initDependencies() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   serviceLocator.registerLazySingleton(() => FirebaseAuth.instance);
   serviceLocator.registerLazySingleton(() => FirebaseFirestore.instance);
-
+  serviceLocator.registerLazySingleton(() => FirebaseFirestore.instance);
   //core
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(),
   );
   _initAuth();
+  _initBlog();
 }
 
 void _initAuth() {
@@ -40,9 +46,28 @@ void _initAuth() {
     ..registerFactory(() => CurrentUser(serviceLocator()))
     // Bloc
     ..registerLazySingleton(() => AuthBloc(
-          userSignUp: serviceLocator(),
-          userLogin: serviceLocator(),
-          currentUser: serviceLocator(),
-          appUserCubit: serviceLocator()
-        ));
+        userSignUp: serviceLocator(),
+        userLogin: serviceLocator(),
+        currentUser: serviceLocator(),
+        appUserCubit: serviceLocator()));
+}
+
+void _initBlog() {
+  serviceLocator
+    //data source
+    ..registerFactory<BlogRemoteDataSource>(
+      () => BlogRemoteDataSourceImpl(serviceLocator(), serviceLocator()),
+    )
+    // repository
+    ..registerFactory<BlogRepository>(
+      () => BlogRepositoryImpl(serviceLocator()),
+    )
+    // usecase
+    ..registerFactory(
+      () => UploadBlog(serviceLocator()),
+    )
+    // bloc
+    ..registerLazySingleton(
+      () => BlogBloc(serviceLocator()),
+    );
 }
