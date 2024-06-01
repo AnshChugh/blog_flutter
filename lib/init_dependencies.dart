@@ -15,6 +15,7 @@ import 'package:blog_flutter/firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 
 final serviceLocator = GetIt.instance;
@@ -23,7 +24,7 @@ Future<void> initDependencies() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   serviceLocator.registerLazySingleton(() => FirebaseAuth.instance);
   serviceLocator.registerLazySingleton(() => FirebaseFirestore.instance);
-  serviceLocator.registerLazySingleton(() => FirebaseFirestore.instance);
+  serviceLocator.registerLazySingleton(() => FirebaseStorage.instance);
   //core
   serviceLocator.registerLazySingleton(
     () => AppUserCubit(),
