@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:blog_flutter/features/blog/domain/entities/blog.dart';
 
 class BlogModel extends Blog {
@@ -56,4 +58,9 @@ class BlogModel extends Blog {
         updatedAt: updatedAt ?? this.updatedAt,
         posterName: posterName ?? this.posterName);
   }
+
+  String toJson() => jsonEncode(toMap());
+
+  factory BlogModel.fromjson(String source) =>
+      BlogModel.fromMap(jsonDecode(source));
 }

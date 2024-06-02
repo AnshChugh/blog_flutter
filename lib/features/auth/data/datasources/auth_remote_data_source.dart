@@ -1,6 +1,5 @@
 import 'package:blog_flutter/core/error/exceptions.dart';
 import 'package:blog_flutter/features/auth/data/models/user_model.dart';
-import 'package:blog_flutter/features/auth/domain/usecases/current_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:firebase_auth/firebase_auth.dart";
 import 'package:blog_flutter/core/common/entities/user.dart' as user;
